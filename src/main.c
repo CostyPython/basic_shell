@@ -3,8 +3,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-void promptLoop(void);
-void identifyCommand(char *command);
+int promptLoop(void);
+int parseInput(char *pCommand);
+char *parseCommand(char *pCommand);
 
 int main(void)
 {
@@ -12,39 +13,72 @@ int main(void)
     return 0;
 }
 
-void promptLoop(void)
+int promptLoop(void)
 {
-
-    char command[256];
+    char command[1024];
     int index = 0;
 
-    printf("\nTERMINAL> ");
+    printf("\nSHELL> ");
 
     while (1)
     {
         if (_kbhit())
         {
             char key = _getch();
+
             if (key == '\r')
             {
-                identifyCommand(command);
-                promptLoop();
+                command[index] = '\0';
+
+                parseInput(command);
+
+                index = 0;
+
+                printf("\nSHELL> ");
             }
             else
             {
-                printf("%c", key);
-                command[index] = key;
-                index++;
+                if (index < 1023)
+                {
+                    printf("%c", key);
+
+                    command[index] = key;
+                    index++;
+                }
+                else
+                {
+                    return 1;
+                }
             }
         }
     }
+
+    return 0;
 }
 
-void identifyCommand(char *command)
+int parseInput(char *pCommand)
 {
+    char *command = parseCommand(pCommand);
 
-    if (strcmp(command, "clear") == 0)
+    printf("\nCommand: %s", command);
+
+    return 0;
+}
+
+char *parseCommand(char *pCommand)
+{
+    char *input = pCommand;
+
+    int length = strlen(input);
+
+    for (int i = 0; i < length; i++)
     {
-        system("cls");
+        if (input[i] == ' ')
+        {
+            input[i] = '\0';
+            break;
+        }
     }
+
+    return input;
 }
