@@ -1,16 +1,19 @@
 #include <stdio.h>
+#include <string.h>
 
+int newFunc(char *word);
 int main()
 {
-    int x = 4;
+    char word[1024];
 
-    int *pX = &x;
+    strcpy(word, "Hello World!");
+    newFunc(word);
 
-    int y = *pX;
+    return 0;
+}
 
-    printf("%d", pX); // prints the address.
-    printf("\n");
-    printf("%d", y); // prints the value of x -> 4.
-
+int newFunc(char *word)
+{
+    printf("%s", word);
     return 0;
 }
