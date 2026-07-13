@@ -1,9 +1,13 @@
 #include <stdio.h>
+#include <conio.h>
 #include <string.h>
+#include <stdlib.h>
 
 int print_new_line(void);
 int take_user_input(void);
 int parseCommand(char *pCommand);
+
+void clear(void);
 
 char userInput[1000];
 char command[1000];
@@ -13,7 +17,6 @@ int main()
     print_new_line();
     take_user_input();
     parseCommand(userInput);
-    printf("Command: %s\n", command);
 
     return 0;
 }
@@ -49,4 +52,9 @@ int parseCommand(char *userInput)
     strcpy(command, userInput);
 
     return 0;
+}
+
+void clear()
+{
+    system("cls");
 }
