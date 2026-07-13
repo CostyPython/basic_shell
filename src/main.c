@@ -3,9 +3,24 @@
 #include <string.h>
 #include <stdlib.h>
 
+typedef struct
+{
+    char *name;
+    void (*function)();
+} Command;
+
 int promptLoop(void);
-int parseInput(char *pCommand);
+char *parseInput(char *pCommand);
 char *parseCommand(char *pCommand);
+
+int hash(char *str);
+Command *findCommand(char *name);
+
+void clear();
+
+#define TABLE_SIZE 100
+
+Command *table[TABLE_SIZE];
 
 int main(void)
 {
@@ -30,7 +45,8 @@ int promptLoop(void)
             {
                 command[index] = '\0';
 
-                parseInput(command);
+                char *hashSeed = parseInput(command);
+                findCommand(hashSeed);
 
                 index = 0;
 
@@ -56,13 +72,11 @@ int promptLoop(void)
     return 0;
 }
 
-int parseInput(char *pCommand)
+char *parseInput(char *pCommand)
 {
     char *command = parseCommand(pCommand);
 
-    printf("\nCommand: %s", command);
-
-    return 0;
+    return command;
 }
 
 char *parseCommand(char *pCommand)
@@ -81,4 +95,32 @@ char *parseCommand(char *pCommand)
     }
 
     return input;
+}
+
+int hash(char *str)
+{
+    int hash = 0;
+    for (int i = 0; i < strlen(str); i++)
+    {
+        hash += str[i] * (i + 1);
+    }
+
+    return hash % TABLE_SIZE;
+}
+
+void clear()
+{
+    system("cls");
+}
+
+Command *findCommand(char *name)
+{
+    int index = hash(name);
+
+    if (table[index] != NULL && strcmp(table[index]->name, name) == 0)
+    {
+        return table[index];
+    }
+
+    return NULL;
 }

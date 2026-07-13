@@ -1,19 +1,22 @@
 #include <stdio.h>
 #include <string.h>
 
-int newFunc(char *word);
+int hash(char *str);
+
 int main()
 {
-    char word[1024];
-
-    strcpy(word, "Hello World!");
-    newFunc(word);
+    printf("Hash: %d\n", hash("abc"));
 
     return 0;
 }
 
-int newFunc(char *word)
+int hash(char *str)
 {
-    printf("%s", word);
-    return 0;
+    int hash = 0;
+    for (int i = 0; i < strlen(str); i++)
+    {
+        hash += str[i] * (i + 1);
+    }
+
+    return hash;
 }
