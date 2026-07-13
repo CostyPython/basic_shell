@@ -13,17 +13,19 @@ char commands[SIZE][32];
 Function functions[SIZE] = {0};
 
 void clear(void);
-void function1(void);
-void function2(void);
+void exit_shell(void);
+void help(void);
 
-void addFunction(Function function, char *command);
-void runCommand(char *command);
+void add_function(Function function, char *command);
+void run_command(char *command);
 
 int hash(char *str);
 
 int main()
 {
-    addFunction(clear, "clear");
+    add_function(clear, "clear");
+    add_function(exit_shell, "exit");
+    add_function(help, "help");
 
     while (1)
     {
@@ -35,13 +37,13 @@ int main()
 
         strcpy(command, userInput);
 
-        runCommand(command);
+        run_command(command);
     }
 
     return 0;
 }
 
-void runCommand(char *command)
+void run_command(char *command)
 {
     if (command[0] != '\0')
     {
@@ -54,12 +56,12 @@ void runCommand(char *command)
         }
         else
         {
-            printf("Unknown command: %s\n", command);
+            printf("Unknown Operation: %s\n", command);
         }
     }
 }
 
-void addFunction(Function function, char *command)
+void add_function(Function function, char *command)
 {
     int index = hash(command);
 
@@ -92,4 +94,24 @@ int hash(char *str)
 void clear(void)
 {
     system("cls");
+}
+
+void exit_shell(void)
+{
+    exit(0);
+}
+
+void help(void)
+{
+    printf("......................\n");
+    printf("COMMANDS\n");
+    printf("......................\n");
+
+    for (int i = 0; i < SIZE; i++)
+    {
+        if (functions[i] != NULL)
+        {
+            printf("%s\n", commands[i]);
+        }
+    }
 }
