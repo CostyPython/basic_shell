@@ -1,60 +1,95 @@
 #include <stdio.h>
-#include <conio.h>
 #include <string.h>
 #include <stdlib.h>
 
-int print_new_line(void);
-int take_user_input(void);
-int parseCommand(char *pCommand);
+#define SIZE 100
 
-void clear(void);
+typedef void (*Function)(void);
 
 char userInput[1000];
 char command[1000];
 
+char commands[SIZE][32];
+Function functions[SIZE] = {0};
+
+void clear(void);
+void function1(void);
+void function2(void);
+
+void addFunction(Function function, char *command);
+void runCommand(char *command);
+
+int hash(char *str);
+
 int main()
 {
-    print_new_line();
-    take_user_input();
-    parseCommand(userInput);
+    addFunction(clear, "clear");
 
-    return 0;
-}
-
-int print_new_line()
-{
-    printf("%s", "SHELL>");
-
-    return 0;
-}
-
-int take_user_input()
-{
-    fgets(userInput, sizeof(userInput), stdin);
-    strcpy(userInput, userInput);
-
-    return 0;
-}
-
-int parseCommand(char *userInput)
-{
-    int commandIndex = 0;
-
-    for (int i = 0; i < strlen(userInput); i++)
+    while (1)
     {
-        if (userInput[i] == ' ')
-        {
-            userInput[i] = '\0';
-            break;
-        }
+        printf("SHELL>");
+
+        fgets(userInput, sizeof(userInput), stdin);
+
+        userInput[strcspn(userInput, "\n")] = '\0';
+
+        strcpy(command, userInput);
+
+        runCommand(command);
     }
 
-    strcpy(command, userInput);
-
     return 0;
 }
 
-void clear()
+void runCommand(char *command)
+{
+    if (command[0] != '\0')
+    {
+        int index = hash(command);
+
+        if (functions[index] != NULL &&
+            strcmp(commands[index], command) == 0)
+        {
+            functions[index]();
+        }
+        else
+        {
+            printf("Unknown command: %s\n", command);
+        }
+    }
+}
+
+void addFunction(Function function, char *command)
+{
+    int index = hash(command);
+
+    while (functions[index] != NULL)
+    {
+        if (strcmp(commands[index], command) == 0)
+        {
+            break;
+        }
+
+        index = (index + 1) % SIZE;
+    }
+
+    strcpy(commands[index], command);
+    functions[index] = function;
+}
+
+int hash(char *str)
+{
+    unsigned int hash = 0;
+
+    for (int i = 0; str[i] != '\0'; i++)
+    {
+        hash += str[i] * (i + 1);
+    }
+
+    return hash % SIZE;
+}
+
+void clear(void)
 {
     system("cls");
 }
